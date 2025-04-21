@@ -66,4 +66,34 @@ public class AssignmentServiceImpl implements AssignmentService {
                         as.getMissionRole()))
                 .toList();
     }
+
+    @Override
+    public AssignmentResponseDTO updateAssignment(String assignmentId, AssignmentRequestDTO dto) {
+        // Convert String to Integer
+        int id = Integer.parseInt(assignmentId);
+
+        AstronautSatellite assignment = assignmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+
+        Astronaut astronaut = astronautRepository.findByAstronautId(dto.astronautId())
+                .orElseThrow(() -> new RuntimeException("Astronaut not found"));
+        Satellite satellite = satelliteRepository.findBySatelliteId(dto.satelliteId())
+                .orElseThrow(() -> new RuntimeException("Satellite not found"));
+
+        assignment.setAstronaut(astronaut);
+        assignment.setSatellite(satellite);
+        assignment.setAssignedDate(dto.assignedDate());
+        assignment.setMissionRole(dto.missionRole());
+
+        assignmentRepository.save(assignment);
+
+        return new AssignmentResponseDTO(
+                astronaut.getAstronautId(),
+                astronaut.getFirstName() + " " + astronaut.getLastName(),
+                satellite.getSatelliteId(),
+                satellite.getName(),
+                dto.assignedDate(),
+                dto.missionRole()
+        );
+    }
 }

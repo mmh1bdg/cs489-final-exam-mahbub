@@ -8,4 +8,5 @@ import java.util.List;
 public interface AssignmentService {
     AssignmentResponseDTO assignAstronautToSatellite(AssignmentRequestDTO dto);
     List<AssignmentResponseDTO> getAllAssignments();
+    AssignmentResponseDTO updateAssignment(String assignmentId, AssignmentRequestDTO dto);
 }

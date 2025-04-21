@@ -28,4 +28,11 @@ public class AssignmentController {
     public ResponseEntity<List<AssignmentResponseDTO>> getAll() {
         return ResponseEntity.ok(assignmentService.getAllAssignments());
     }
+
+    @PutMapping("/{assignmentId}")
+    public ResponseEntity<AssignmentResponseDTO> updateAssignment(
+            @PathVariable String assignmentId,
+            @RequestBody @Valid AssignmentRequestDTO dto) {
+        return ResponseEntity.ok(assignmentService.updateAssignment(assignmentId, dto));
+    }
 }
