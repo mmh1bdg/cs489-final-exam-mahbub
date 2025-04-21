@@ -33,4 +33,9 @@ public class SatelliteController {
     public ResponseEntity<SatelliteResponseDTO> getById(@PathVariable String satelliteId) {
         return ResponseEntity.ok(satelliteService.getBySatelliteId(satelliteId));
     }
+
+    @PutMapping
+    public ResponseEntity<SatelliteResponseDTO> update(@RequestBody @Valid SatelliteRequestDTO dto) {
+        return ResponseEntity.ok(satelliteService.updateSatellite(dto));
+    }
 }

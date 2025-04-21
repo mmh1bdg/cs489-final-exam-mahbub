@@ -28,31 +28,44 @@ public class AstronautServiceImpl implements AstronautService {
                 .isActive(dto.isActive())
                 .build();
         repository.save(astronaut);
-        return new AstronautResponseDTO(astronaut.getAstronautId(),
-                astronaut.getFirstName() + " " + astronaut.getLastName(),
-                astronaut.getNationality(),
-                astronaut.getIsActive());
+        return mapToDTO(astronaut);
     }
 
     @Override
     public List<AstronautResponseDTO> getAllAstronauts() {
         return repository.findAll().stream()
-                .map(a -> new AstronautResponseDTO(
-                        a.getAstronautId(),
-                        a.getFirstName() + " " + a.getLastName(),
-                        a.getNationality(),
-                        a.getIsActive()))
+                .map(this::mapToDTO)
                 .toList();
     }
 
     @Override
-    public AstronautResponseDTO getByAstronautId(String astronautId) {
-        Astronaut a = repository.findByAstronautId(astronautId)
+    public AstronautResponseDTO getAstronautById(String astronautId) {
+        Astronaut astro = repository.findByAstronautId(astronautId)
                 .orElseThrow(() -> new RuntimeException("Astronaut not found"));
+        return mapToDTO(astro);
+    }
+
+    @Override
+    public AstronautResponseDTO updateAstronaut(AstronautRequestDTO dto) {
+        Astronaut existing = repository.findByAstronautId(dto.astronautId())
+                .orElseThrow(() -> new RuntimeException("Astronaut not found"));
+
+        existing.setFirstName(dto.firstName());
+        existing.setLastName(dto.lastName());
+        existing.setNationality(dto.nationality());
+        existing.setIsActive(dto.isActive());
+
+        repository.save(existing);
+        return mapToDTO(existing);
+    }
+
+    private AstronautResponseDTO mapToDTO(Astronaut a) {
         return new AstronautResponseDTO(
                 a.getAstronautId(),
-                a.getFirstName() + " " + a.getLastName(),
+                a.getFirstName(),
+                a.getLastName(),
                 a.getNationality(),
-                a.getIsActive());
+                a.getIsActive()
+        );
     }
 }

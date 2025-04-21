@@ -4,5 +4,5 @@ public record AstronautResponseDTO(
         String astronautId,
         String fullName,
         String nationality,
-        Boolean isActive
+        String aNationality, Boolean isActive
 ) {}

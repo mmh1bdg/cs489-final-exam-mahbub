@@ -27,22 +27,13 @@ public class SatelliteServiceImpl implements SatelliteService {
                 .status(dto.status())
                 .build();
         repository.save(satellite);
-        return new SatelliteResponseDTO(
-                satellite.getSatelliteId(),
-                satellite.getName(),
-                satellite.getLaunchDate(),
-                satellite.getStatus()
-        );
+        return toDTO(satellite);
     }
 
     @Override
     public List<SatelliteResponseDTO> getAllSatellites() {
         return repository.findAll().stream()
-                .map(s -> new SatelliteResponseDTO(
-                        s.getSatelliteId(),
-                        s.getName(),
-                        s.getLaunchDate(),
-                        s.getStatus()))
+                .map(this::toDTO)
                 .toList();
     }
 
@@ -50,10 +41,32 @@ public class SatelliteServiceImpl implements SatelliteService {
     public SatelliteResponseDTO getBySatelliteId(String satelliteId) {
         Satellite s = repository.findBySatelliteId(satelliteId)
                 .orElseThrow(() -> new RuntimeException("Satellite not found"));
+        return toDTO(s);
+    }
+
+    @Override
+    public SatelliteResponseDTO updateSatellite(SatelliteRequestDTO dto) {
+        Satellite existing = repository.findBySatelliteId(dto.satelliteId())
+                .orElseThrow(() -> new RuntimeException("Satellite not found"));
+
+        if ("DECOMMISSIONED".equalsIgnoreCase(existing.getStatus())) {
+            throw new RuntimeException("Cannot update a DECOMMISSIONED satellite.");
+        }
+
+        existing.setName(dto.name());
+        existing.setLaunchDate(dto.launchDate());
+        existing.setStatus(dto.status());
+
+        repository.save(existing);
+        return toDTO(existing);
+    }
+
+    private SatelliteResponseDTO toDTO(Satellite s) {
         return new SatelliteResponseDTO(
                 s.getSatelliteId(),
                 s.getName(),
                 s.getLaunchDate(),
-                s.getStatus());
+                s.getStatus()
+        );
     }
 }

@@ -8,5 +8,6 @@ import java.util.List;
 public interface AstronautService {
     AstronautResponseDTO createAstronaut(AstronautRequestDTO dto);
     List<AstronautResponseDTO> getAllAstronauts();
-    AstronautResponseDTO getByAstronautId(String astronautId);
+    AstronautResponseDTO getAstronautById(String astronautId); // ✅ Add this
+    AstronautResponseDTO updateAstronaut(AstronautRequestDTO dto);
 }
